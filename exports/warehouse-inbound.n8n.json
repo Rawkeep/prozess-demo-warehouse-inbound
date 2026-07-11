@@ -1,0 +1,290 @@
+{
+  "name": "Wareneingang & Einlagerung (Lager & Logistik)",
+  "nodes": [
+    {
+      "id": "pm-warehouse-inbound-start",
+      "name": "Lieferavis empfangen",
+      "position": [
+        40,
+        300
+      ],
+      "parameters": {},
+      "typeVersion": 1,
+      "type": "n8n-nodes-base.manualTrigger",
+      "notes": "Rolle: Lieferant"
+    },
+    {
+      "id": "pm-warehouse-inbound-avis",
+      "name": "Avis einlesen & Anlieferung planen",
+      "position": [
+        320,
+        300
+      ],
+      "parameters": {
+        "url": "https://example.internal/edi-gateway/avis",
+        "options": {}
+      },
+      "typeVersion": 4.2,
+      "type": "n8n-nodes-base.httpRequest",
+      "notes": "SLA: 0.1 h"
+    },
+    {
+      "id": "pm-warehouse-inbound-receive",
+      "name": "Wareneingang buchen",
+      "position": [
+        600,
+        300
+      ],
+      "parameters": {
+        "url": "https://example.internal/sap-s-4hana-(migo)/receive",
+        "options": {}
+      },
+      "typeVersion": 4.2,
+      "type": "n8n-nodes-base.httpRequest",
+      "notes": "SLA: 0.1 h"
+    },
+    {
+      "id": "pm-warehouse-inbound-qc",
+      "name": "Qualitätsprüfung durchführen",
+      "position": [
+        880,
+        300
+      ],
+      "parameters": {},
+      "typeVersion": 1,
+      "type": "n8n-nodes-base.noOp",
+      "notes": "Rolle: Qualitätssicherung | SLA: 2 h"
+    },
+    {
+      "id": "pm-warehouse-inbound-d-qc",
+      "name": "Qualität in Ordnung?",
+      "position": [
+        1160,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "pm-warehouse-inbound-d-qc-c0",
+              "leftValue": "={{ $json[\"d-qc\"] }}",
+              "rightValue": "ja",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "typeVersion": 2,
+      "type": "n8n-nodes-base.if",
+      "notes": "Rolle: Qualitätssicherung"
+    },
+    {
+      "id": "pm-warehouse-inbound-store",
+      "name": "Ware einlagern",
+      "position": [
+        1440,
+        300
+      ],
+      "parameters": {},
+      "typeVersion": 1,
+      "type": "n8n-nodes-base.noOp",
+      "notes": "Rolle: Lager | SLA: 1 h"
+    },
+    {
+      "id": "pm-warehouse-inbound-stock",
+      "name": "Bestand aktualisieren",
+      "position": [
+        1720,
+        300
+      ],
+      "parameters": {
+        "url": "https://example.internal/sap-s-4hana/stock",
+        "options": {}
+      },
+      "typeVersion": 4.2,
+      "type": "n8n-nodes-base.httpRequest",
+      "notes": "SLA: 0.1 h"
+    },
+    {
+      "id": "pm-warehouse-inbound-block",
+      "name": "Sperrbestand buchen",
+      "position": [
+        1440,
+        500
+      ],
+      "parameters": {
+        "url": "https://example.internal/sap-s-4hana/block",
+        "options": {}
+      },
+      "typeVersion": 4.2,
+      "type": "n8n-nodes-base.httpRequest",
+      "notes": "SLA: 0.1 h"
+    },
+    {
+      "id": "pm-warehouse-inbound-claim",
+      "name": "Lieferant reklamieren",
+      "position": [
+        1720,
+        500
+      ],
+      "parameters": {},
+      "typeVersion": 1,
+      "type": "n8n-nodes-base.noOp",
+      "notes": "Rolle: Einkauf | SLA: 4 h"
+    },
+    {
+      "id": "pm-warehouse-inbound-end",
+      "name": "Wareneingang abgeschlossen",
+      "position": [
+        2000,
+        300
+      ],
+      "parameters": {},
+      "typeVersion": 1,
+      "type": "n8n-nodes-base.noOp"
+    },
+    {
+      "id": "pm-warehouse-inbound-sticky",
+      "name": "Prozess-Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        40,
+        40
+      ],
+      "parameters": {
+        "content": "## Wareneingang & Einlagerung\n**Branche:** Lager & Logistik\n\nLieferavis per EDI, Wareneingangsbuchung in S/4, Qualitätsprüfung, Einlagerung oder Sperrbestand mit Lieferantenreklamation.",
+        "width": 460,
+        "height": 200
+      }
+    }
+  ],
+  "connections": {
+    "Lieferavis empfangen": {
+      "main": [
+        [
+          {
+            "node": "Avis einlesen & Anlieferung planen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Avis einlesen & Anlieferung planen": {
+      "main": [
+        [
+          {
+            "node": "Wareneingang buchen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wareneingang buchen": {
+      "main": [
+        [
+          {
+            "node": "Qualitätsprüfung durchführen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qualitätsprüfung durchführen": {
+      "main": [
+        [
+          {
+            "node": "Qualität in Ordnung?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qualität in Ordnung?": {
+      "main": [
+        [
+          {
+            "node": "Ware einlagern",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sperrbestand buchen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ware einlagern": {
+      "main": [
+        [
+          {
+            "node": "Bestand aktualisieren",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bestand aktualisieren": {
+      "main": [
+        [
+          {
+            "node": "Wareneingang abgeschlossen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sperrbestand buchen": {
+      "main": [
+        [
+          {
+            "node": "Lieferant reklamieren",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lieferant reklamieren": {
+      "main": [
+        [
+          {
+            "node": "Wareneingang abgeschlossen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "generatedBy": "process_modeling",
+    "processId": "warehouse-inbound"
+  },
+  "tags": []
+}

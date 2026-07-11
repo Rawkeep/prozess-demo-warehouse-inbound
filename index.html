@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wareneingang & Einlagerung — Prozess-Demo · Rawkeep</title>
+<meta name="description" content="Interaktive Prozess-Demo (Lager & Logistik): Simulation, KPIs, n8n- und BPMN-Export. Ein Rawkeep-Service.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏭</text></svg>">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <a class="logo" href="https://rawkeep.com/">rawkeep<span>.</span></a>
+  <div class="crumb"><a href="https://rawkeep.com/demos/prozesse/">← Alle
+  Prozess-Demos</a></div>
+  <a class="btn primary" href="https://rawkeep.com/#kontakt">Projekt anfragen →</a>
+</div></header>
+<main><div class="wrap">
+  <p class="eyebrow">Prozess-Modellierung als Service · Lager & Logistik</p>
+  <h1 class="sec">🏭 Wareneingang & Einlagerung</h1>
+  <p class="lead">Lieferavis per EDI, Wareneingangsbuchung in S/4, Qualitätsprüfung, Einlagerung oder Sperrbestand mit Lieferantenreklamation.</p>
+  <div class="kpis" id="kpis"><div class="kpi"><b>10</b><span>Schritte</span></div><div class="kpi"><b>1</b><span>Entscheidungen</span></div><div class="kpi"><b>4</b><span>Rollen</span></div><div class="kpi"><b>57%</b><span>Automatisiert</span></div><div class="kpi"><b>3,3 h</b><span>SLA Happy Path</span></div></div>
+  <div class="panel">
+    <h2>Prozess durchspielen</h2>
+    <div class="controls">
+      <div id="decs" class="controls" style="gap:16px"></div>
+      <button class="btn" id="replay" type="button">↻ Neu abspielen</button>
+    </div>
+    <div class="result" id="result">
+      <div class="chips" id="chips"></div>
+      <div class="sla" id="sla"></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Prozessdiagramm</h2>
+    <div class="diagram"><svg id="svg" role="img"
+      aria-label="Prozessdiagramm Wareneingang & Einlagerung"></svg></div>
+  </div>
+  <div class="panel">
+    <h2>Schritte, Rollen &amp; Systeme</h2>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>Schritt</th><th>Typ</th><th>Rolle</th><th>System</th>
+      <th>SLA</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table></div>
+  </div>
+  <div class="panel">
+    <h2>Mitnehmen &amp; ausführen</h2>
+    <div class="dl">
+      <button class="btn primary" id="dl-n8n" type="button">⬇ n8n-Workflow (JSON)</button>
+      <button class="btn" id="dl-bpmn" type="button">⬇ BPMN 2.0 (XML)</button>
+    </div>
+    <p class="hint">Das JSON ist direkt in n8n importierbar (Workflows → Import from
+    File). Das BPMN öffnet in SAP Signavio, Camunda Modeler oder bpmn.io. Beide
+    liegen auch unter <code>exports/</code> in diesem Repo.</p>
+  </div>
+</div></main>
+<footer><div class="wrap">
+  <span>© Rawkeep · Prozesse digitalisieren &amp; automatisieren.</span>
+  <span><a href="https://rawkeep.com/impressum.html">Impressum</a> ·
+  <a href="https://rawkeep.com/datenschutz.html">Datenschutz</a></span>
+</div></footer>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
