@@ -41,4 +41,4 @@ Modelländerungen dort pflegen und neu exportieren — oder ab hier frei von Han
 weiterentwickeln.
 
 ---
-© Rawkeep · Inhaber: Frakibou Imqhamed · <https://rawkeep.com>
+© Rawkeep · <https://rawkeep.com>
